@@ -1,0 +1,2 @@
+nohup: ignoring input
+python: can't open file '/home/jfuentes/Segmentacion-semantica-en-imagenes-biomedicas-de-ACV-isquemico-con-arquitecturas-U-Net/Hausdorff_K2Tree_c++/python_module/tests/train.py': [Errno 2] No such file or directory

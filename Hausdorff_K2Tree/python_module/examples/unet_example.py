@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 
 # Importar nuestro módulo
-import hausdorff_k2tree as hk2t
+import hausdorff_k2tree_python as hk2t
 
 class SimpleUNet(nn.Module):
     """U-Net simplificado para el ejemplo"""

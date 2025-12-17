@@ -12,7 +12,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 try:
-    import hausdorff_k2tree as hk2t
+    import hausdorff_k2tree_python as hk2t
     MODULE_AVAILABLE = True
 except ImportError as e:
     print(f"Módulo no disponible: {e}")

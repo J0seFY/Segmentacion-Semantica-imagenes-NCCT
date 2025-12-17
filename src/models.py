@@ -4,7 +4,7 @@ Model Definitions for Ischemic Stroke Segmentation
 This module provides three architectures:
 1. U-Net (Baseline)
 2. Attention U-Net
-3. HybridUNet (SOTA: UNet3+ + HINT + ASPP)
+3. HybridUNet (SOTA: UNet3+ + ASPP)
 """
 
 import torch
@@ -210,24 +210,8 @@ class AttentionUNet(nn.Module):
 
 
 # ============================================================================
-# HYBRID UNET (SOTA: UNet3+ + HINT + ASPP)
+# HYBRID UNET (SOTA: UNet3+ + ASPP)
 # ============================================================================
-
-class HintModule(nn.Module):
-    def __init__(self, in_channels, hint_channels):
-        super().__init__()
-        self.hint_extractor = nn.Sequential(
-            nn.Conv2d(in_channels, hint_channels, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(hint_channels),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(hint_channels, hint_channels, kernel_size=1, padding=0, bias=False),
-            nn.BatchNorm2d(hint_channels),
-            nn.ReLU(inplace=True)
-        )
-
-    def forward(self, x):
-        return self.hint_extractor(x)
-
 
 class ASPP(nn.Module):
     def __init__(self, in_channels, out_channels, rates=[1, 6, 12, 18]):
@@ -273,20 +257,13 @@ class ASPP(nn.Module):
 
 
 class HybridUNet(nn.Module):
-    def __init__(self, in_channels=1, num_classes=1, use_aspp=True, use_hint=True, dropout=0.0):
+    def __init__(self, in_channels=1, num_classes=1, use_aspp=True, dropout=0.0):
         super().__init__()
         self.use_aspp = use_aspp
-        self.use_hint = use_hint
         filters = [64, 128, 256, 512, 1024]
         cat_channels = 64
         decoder_in_channels = cat_channels * 5
-        self.hint_channels = 32
-        if self.use_hint:
-            self.hint_module = HintModule(in_channels, self.hint_channels)
-            enc1_in_channels = in_channels + self.hint_channels
-        else:
-            self.hint_module = None
-            enc1_in_channels = in_channels
+        enc1_in_channels = in_channels
         self.enc1 = ConvBlock(enc1_in_channels, filters[0])
         self.pool1 = nn.MaxPool2d(2, 2)
         self.enc2 = ConvBlock(filters[0], filters[1])
@@ -339,11 +316,6 @@ class HybridUNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        if self.use_hint and self.hint_module:
-            x_hint = self.hint_module(x)
-            if x_hint.shape[2:] != x.shape[2:]:
-                 x_hint = F.interpolate(x_hint, size=x.shape[2:], mode='bilinear', align_corners=False)
-            x = torch.cat([x, x_hint], dim=1)
         e1 = self.enc1(x)
         p1 = self.pool1(e1)
         e2 = self.enc2(p1)
@@ -388,10 +360,9 @@ def create_model(model_name: str, dropout: float = 0.0, **kwargs) -> nn.Module:
     elif model_name == 'attention_unet':
         model = AttentionUNet(channels_in=1, channels_out=1)
     elif model_name == 'hybrid_unet':
-        # Allow overriding ASPP/HINT via kwargs for ablation studies
+        # Allow overriding ASPP via kwargs for ablation studies
         use_aspp = kwargs.get('use_aspp', True)
-        use_hint = kwargs.get('use_hint', True)
-        model = HybridUNet(in_channels=1, num_classes=1, use_aspp=use_aspp, use_hint=use_hint, dropout=dropout)
+        model = HybridUNet(in_channels=1, num_classes=1, use_aspp=use_aspp, dropout=dropout)
     else:
         raise ValueError(f"Unknown model: {model_name}. Choose from: unet, attention_unet, hybrid_unet")
     

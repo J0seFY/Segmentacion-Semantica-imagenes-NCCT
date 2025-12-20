@@ -12,7 +12,7 @@
 
 namespace py = pybind11;
 
-// Función auxiliar para convertir máscara numpy a vector de puntos
+// Función auxiliar para convertir máscara numpy a vector de puntos - ELABORACION PROPIA
 std::vector<Point> mask_to_points(py::array_t<uint8_t> mask) {
     auto buf = mask.request();
     
@@ -200,8 +200,8 @@ double hausdorff_taha(py::array_t<uint8_t> mask1, py::array_t<uint8_t> mask2, in
     HausdorffCalculator calc(max_level);
     return calc.calculate_taha(mask1, mask2);
 }
-
-PYBIND11_MODULE(hausdorff_k2tree_core, m) {
+//ELABORACION PROPIA
+PYBIND11_MODULE(hausdorff_k2tree_core, m) { 
     m.doc() = "Hausdorff K2Tree algorithms for Python";
     
     // Clase principal

@@ -75,15 +75,36 @@ Segmentacion-Semantica-imagenes-NCCT/
 ## Descripción de Módulos y Carpetas
 
 ### 1. **Hausdorff_K2Tree**
-Correspondencia con el Proyecto Fondecyt de Iniciación en Investigación 2025 N° 11251944:
-- **Título**: "Algoritmos y Estructuras de Datos Compactas para Calcular Eficientemente la Similitud de Conjuntos de Puntos usando la Distancia de Hausdorff"
-- **Contenido**: Implementación en C++ de algoritmos para cálculo eficiente de distancia Hausdorff usando K2Trees.
+#### Autoría y Proveniencia del Código
 
-**Autoría del Proyecto (Módulo Python):**
-- **`python_module/`**: Binding de C++ a Python usando PyBind11
-  - Exporta funciones de cálculo de Hausdorff al entorno de Python
-  - Compatible con PyTorch tensors
-  - Incluye wrapper Python para facilitar integración en pipelines de deep learning
+El directorio **`Hausdorff_K2Tree/`** corresponde al repositorio original del proyecto Fondecyt de Iniciación en Investigación 2025 N° 11251944, disponible públicamente en:
+
+https://github.com/fsantolaya/Hausdorff_k2tree
+
+El código base en C++ (algoritmos, estructuras de datos y utilidades) **NO es de autoría de los autores de este proyecto de título** y se incluye únicamente con fines de integración y evaluación experimental.
+
+#### Aporte realizado en este proyecto (de autoría propia)
+- **`python_module/`**: Módulo de integración C++/Python desarrollado en el contexto de este proyecto.
+  - Binding de C++ a Python usando **PyBind11**.
+  - Exposición de funciones para el cálculo de distancia de Hausdorff mediante distintos algoritmos.
+  - Compatibilidad con tensores de **PyTorch** para su uso en pipelines de deep learning.
+
+  - El archivo **`python_module/src/python_binding.cpp`** agrupa las funciones principales del proyecto relacionadas con el cálculo de distancias de Hausdorff utilizando diferentes algoritmos.
+    - Las funciones desarrolladas específicamente en este proyecto se encuentran **explícitamente indicadas mediante comentarios en el código**.
+    - El resto de las funciones corresponden a implementaciones de **autoría de los integrantes del proyecto Fondecyt**.
+
+  - La carpeta **`hausdorff_k2tree_python/`** (dentro de `python_module/`) corresponde íntegramente a código de **autoría de los autores de este proyecto**, e incluye los wrappers y utilidades Python para facilitar la integración y el uso del módulo desde entornos de aprendizaje profundo.
+
+ 
+#### Nota sobre la integración del repositorio
+
+El repositorio original **Hausdorff_K2Tree** no se incluyó como submódulo de Git debido a que el módulo `python_module/` requiere una integración directa con la estructura de directorios del proyecto para:
+
+- Mantener rutas relativas consistentes durante la compilación con CMake y PyBind11.
+- Evitar modificaciones extensivas en los scripts de entrenamiento y evaluación existentes.
+
+Por esta razón, el código fue incorporado directamente manteniendo su estructura original, respetando su autoría y referencia explícita al repositorio fuente.
+
 
 ### 2. **scripts/**
 Scripts principales para procesamiento, entrenamiento y evaluación:
